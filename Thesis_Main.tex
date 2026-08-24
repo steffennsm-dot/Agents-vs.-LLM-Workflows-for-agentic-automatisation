@@ -65,8 +65,9 @@
 \renewcommand{\footrulewidth}{0pt}
 
 % set APA citation style
-\usepackage[style=apa]{biblatex}
-\addbibresource{Bibliography.bib}
+\usepackage[backend=biber,style=apa]{biblatex}
+\addbibresource{references.bib} % Zotero export (Better BibTeX)
+%\addbibresource{Bibliography.bib} % optional: keep if you also use this file
 \pagenumbering{gobble}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -135,7 +136,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % SEC1
 \input{./Sections/Section_1}
-
 % SEC2
 \input{./Sections/Section_2}
 
