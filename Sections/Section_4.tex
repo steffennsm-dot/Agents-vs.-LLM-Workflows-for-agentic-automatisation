@@ -2,21 +2,266 @@
 \section{Task-Level Architecture Decision}
 \label{sec:TADF}
 
-Chapter 4 presents the artifact along its DSR trajectory. Section \ref{subsec:TADF/objectives}
-states what the artifact must achieve and what requiements must be met. Section \ref{subsec:TADF/design}
-shows how it was built, with the design search process across development cycles, including the
-controlled experiments that form its evidence base and the formative role of the two evaluation
-episodes. Section \ref{subsec:TADF/artifact} describes the resulting artifact and its important components in full. Section
-\ref{subsec:TADF/evaluation} reports both evaluation episodes against the objectives. Section \ref{subsec:TADF/demonstration} demonstrates the
-final artifact solving a complete instance of its problem class and summarizes the results.
+This chapter presents the framework along its DSR trajectory. Section \ref{subsec:TADF/objectives} states what the framework must achieve. Section \ref{subsec:TADF/design} shows how it was built, with the design search process across development cycles, including the controlled experiments and the two evaluation episodes. Section \ref{subsec:TADF/artifact} describes the resulting artifact and its components in full. Section \ref{subsec:TADF/evaluation} reports both evaluation episodes against the objectives. Section \ref{subsec:TADF/demonstration} demonstrates the final artifact and summarizes the results.
 
-\subsection{Objectives of a Solution}
+\subsection{Design Objectives for the Framework}
 \label{subsec:TADF/objectives}
-...
+Following the second activity of the DSR methodology, the objectives for the framework are derived from the problem specification and from knowledge of what is possible and feasible \parencite{article}. The framework should be an information system that assists a software architect with the choice of an agentic orchestration architecture per task. Therefore it is framed as a decision support system \parencite{kasperTheoryDecisionSupport1996}.
+The performance criteria of such a system depend on the task, the organizational environment, and the decision maker \parencite{spragueFrameworkDevelopmentDecision1980}.  
+
+The objectives serve two purposes and are stated explicitly \parencite{gregorPositioningPresentingDesign2013}. They guide the design and development of the framework (Section \ref{subsec:TADF/design})
+and are the baseline against which the evaluation and demonstration are read
+(Sections \ref{subsec:TADF/evaluation} and \ref{subsec:TADF/demonstration}).
+Table~\ref{tab:design-objectives} shows the eight design objectives in three categories: the decision core (what is decided and on what basis), the decision quality (properties every decision must have), and use and deployment (for whom the framework must work and where its claims must hold).
+
+\begin{table}[htbp]
+  \centering
+  \caption{Design objectives for the TADF.}
+  \label{tab:design-objectives}
+  \small
+  \begin{tabular}{l l p{9.2cm}}
+    \toprule
+    \textbf{ID} & \textbf{Category} & \textbf{Objective} \\
+    \midrule
+    O1 & Decision core & Complete and structured decision space \\
+    O2 & Decision core & Decisions based on structural, task-level characteristics \\
+    O3 & Decision core & Every recommendation is bound to measured evidence \\
+    O4 & Decision quality & Reproducible decisions that are traceable\\
+    O5 & Decision quality & Measurably better design choice with the framework\\
+    O6 & Use and deployment & Actionable decisions that carry implementation knowledge \\
+    O7 & Use and deployment & Usable by practicing architects with bounded effort \\
+    O8 & Use and deployment & Grounded in realistic domain tasks, with a declared scope \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsubsection{The decision core}
+\label{subsubsec: TADF/decision core}
+The first objective sets the decision space. Every task must be routed to exactly one of four outcomes: deterministic code, an LLM workflow, an agent,
+or decomposition. The routing must combine non-compensatory conditions with a weighted comparison, and every recommendation beyond the route must carry a bindingness label i.e., mandatory, recommended, or optional. Section~2.2 establishes workflows and agents as separate orchestration architectures. The choice between them is the heart of this research, so both must be selectable. A deterministic verdict must be possible because not every task needs an LLM. Also deterministic code avoids hallucinated parameters, unstable results and token costs \parencite{bogavelliAgentArchComprehensiveBenchmark2025, gaoSingleagentMultiagentSystems2025,zhouSelectthenSolveParadigmRouting2026}. Decomposition must be possible because tasks do not arrive in a standardized
+size. Completeness of the decision matters because misrouting is costly: on identical tasks, performance shifted by between $+80.8\%$ and $-70.0\%$ relative to a
+single-agent baseline, depending on the architecture
+\parencite{kimScienceScalingAgent2025}. Without an explicit decision space, designers tend to take the first option that seems to fit \parencite{falessiDecisionmakingTechniquesSoftware2011}. The two decision mechanisms follow from the decision-making literature, which separates compensable trade-offs from constraints that categorically include or exclude options. Purely additive scoring can select the wrong option; purely binary screening can discard viable ones 
+\parencite{amellerLinkingQualityAttributes2012,
+falessiDecisionmakingTechniquesSoftware2011}. Bindingness carries the same separation into the recommendations: some conditions must hold unconditionally, others remain advisable \parencite{hanAADMArchitectureArtifact2026}.
+
+The second objective sets the decision basis. The framework must decide on structural task characteristics that the architect can confirm before the
+system runs. A technology or architecture improves performance only where its functionality corresponds to the requirements of the task. A fit diagnostic framework needs detailed task characteristics rather than general ones \parencite{goodhueTaskTechnologyFitIndividual1995}.
+The agent literature confirms the basis from the technology side. No agentic orchestration architecture is
+universally optimal and selection is governed by measurable task features \parencite{kimScienceScalingAgent2025, bogavelliAgentArchComprehensiveBenchmark2025}.
+
+The third objective binds the framework to its evidence. Every routing rule and every recommendation must trace to evidence obtained under controlled conditions. Evidence-bound justification separates decision support from unsupported opinion. Explanations based on Toulmin’s model provide grounds, warrants, and backing and are expected to increase trust, agreement, and acceptance of system advice \parencite{gregorExplanationsIntelligentSystems1999}. The presentation of advice can influence decision confidence independently of its actual quality \parencite{kasperTheoryDecisionSupport1996}. Moreover, opaque and error-prone advice whose reasoning is inaccessible makes it difficult for experts to assess its correctness and decide whether to accept or reject it \parencite{jussupowAugmentingMedicalDiagnosis2021}. Consistent with software-engineering decision support, recommendations should thus be grounded in models and knowledge supported by empirical investigation \parencite{ruheSoftwareDesicionsupport, arifAIDrivenDecisionSupport2025}. 
+
+\subsubsection{The decision quality}
+\label{subsubsec:TADF/decision-quality}
+The fourth objective concerns the reproducibility and traceability of each decision. The same confirmed task facts must lead to the same route, and every verdict must be reconstructable from its documentation and decision record. This matters because architecture decisions in enterprise automation must survive review and audit. Unexplained decisions are a documented deficit in practice and traceability to the
+motivating characteristics reduces disagreement between assessors \parencite{ruheSoftwareDesicionsupport, hanAADMArchitectureArtifact2026}. Traceability also lets the architect relate the verdict to their own knowledge. The more observable an decisions aid's logical operations and their application are, the better the
+user can judge the aided decision \parencite{kasperTheoryDecisionSupport1996}.
+Field evidence from medical diagnosis shows the alternative. Professionals without insight into the reasoning behind results either accepted them
+blindly or ignored them. Only those who could relate the results to their own knowledge integrated them \parencite{lebovitzEngageNotEngage2022}.
+Experts use reasoning traces and justifications to verify conclusions they disagree with \parencite{gregorExplanationsIntelligentSystems1999}.
+
+
+The fifth objective concerns the value of the decisions. Following the framework must yield measurably better success--cost trade-offs than a uniform architecture choice. Performance impact from a technology means improved effectiveness, improved efficiency, or higher quality
+\parencite{goodhueTaskTechnologyFitIndividual1995}. A decision technique must guide toward better alternatives
+and deliver effectiveness and efficiency as separate benefits
+\parencite{ruheSoftwareDesicionsupport, falessiDecisionmakingTechniquesSoftware2011}. The baseline is part of the objective because decision aids can raise confidence without raising decision quality, and such illusory benefits make an aid of questionable value \parencite{kasperTheoryDecisionSupport1996}. In this research space the stakes are measured. Inference paradigms differ in token cost by an order of magnitude, and coordination structures can differ by $3.1\times$ in token efficiency on identical tasks \parencite{kimScienceScalingAgent2025, zhouSelectthenSolveParadigmRouting2026}. Routing has shown leverage: oracle per-task selection can beat the best fixed paradigm by 17.1 percentage points. \parencite{zhouSelectthenSolveParadigmRouting2026}.
+
+\subsubsection{Use and deployment}
+\label{subsubsec:TADF/use-deployment}
+The sixth objective makes decisions actionable. A route alone does not build a running solution. Every decision for an LLM task must therefore carry implementation knowledge or explanations. Support for all phases of the decision process, implementation included, is among the performance objectives for decision
+support systems \parencite{spragueFrameworkDevelopmentDecision1980}. 
+Explenations for decisions matter as much as content and are used more and work better when specific
+to the case rather than generic \parencite{gregorExplanationsIntelligentSystems1999}. For LLM workflows and agents, guards on tokens, tool calls, and execution time are part of the architecture  itself and need to be considered
+\parencite{yueStaticTemplatesDynamic2026}.
+
+The seventh objective concerns the users. The framework must be usable by practicing architects without knowledge of its rulebook. It must ask understandable questions and keep the effort bounded. Ease of use decides whether an aid is used at all. Its users have latitude to ignore it, so it must earn
+their trust by being valuable and convenient \parencite{spragueFrameworkDevelopmentDecision1980}. 
+Effort decides how much of it is used. Explanations that cost too much effort to access go unused and relating a system's output to one's own knowledge demands time that professionals under time pressure often do not invest
+\parencite{lebovitzEngageNotEngage2022, gregorExplanationsIntelligentSystems1999}. Advice-giving systems also place the user in the difficult role of monitoring and overruling a machine presumed to be more competent than the user \parencite{kasperTheoryDecisionSupport1996}. Software architecture practice underlines these requirements. High-effort methods pay off only in large
+projects, and architects do not trust fully automatic solutions \parencite{amellerLinkingQualityAttributes2012, arifAIDrivenDecisionSupport2025}. 
+
+The eighth objective sets the validity scope. The framework must be developed and evaluated on the tasks of its domain, and it must declare its limits. Architecture evaluations in the field run predominantly on mathematics and coding benchmarks, and such evidence can mislead guidance for real work \parencite{kimScienceScalingAgent2025}. Few benchmarks target enterprise workflows, although models struggle exactly on routine workplace tasks with realistic, messy data
+\parencite{bogavelliAgentArchComprehensiveBenchmark2025}.
+The framework must therefore be grounded and tested on realistic workplace-automation tasks at task granularity.
+A decision aid should leave its user with a confidence that matches the quality of the aided decision. This requires the aid to convey its own applicability and inapplicability \parencite{kasperTheoryDecisionSupport1996}. 
 
 \subsection{Design and Development}
 \label{subsec:TADF/design}
-...
+This section reports the third DSRM activity, design and development \parencite{article}. It follows the view of design as a search for an effective artifact (Guideline~6 in
+\cite{hevnerDesignScienceInformation2004}). At the start, the workflow-versus-agent choice had no measured basis at task level. Practitioner guidance rests on heuristics, and criteria hard to define before execution (Section~2.4). The third design objective (
+Section~\ref{subsec:TADF/objectives}) therefore fixed the approach: every routing rule must trace to evidence obtained under controlled conditions. The evidence was produced by an iterative experimental program that this section reports. During the development the trajectory was versioned with an interation log to keep tack of ever change. A task taxonomy supplies the vocabulary and tasks to execute (Section~\ref{subsubsec:TADF/taxonomy}). Task instances and a sandbox environment make the taxonomy measurable (Section~\ref{subsubsec:TADF/setup}). Every archetype is implemented in both paradigms and measured in one capability grid (Section~\ref{subsubsec:TADF/paradigms}).
+Deep-dive runs answer the questions the grid left open (Section~\ref{subsubsec:TADF/deepdive}). The results follow and where used to find criteria to build an desicion famework (Section~\ref{subsubsec:TADF/results}).
+
+\subsubsection{Task Taxonomy}
+\label{subsubsec:TADF/taxonomy}
+The task taxonomy for the controlled experiments is an own construct. It supplies the vocabulary and the basis for the framework evidence \parencite{marchDesignNaturalScience1995}. 
+An own taxonomy was needed because no single benchmark met the requirements of the research. The requirements are deviations from the related literature and the framework objectives. The task taxonomy had to contain agentic and non-agentic tasks. It had to describe the tasks by known task characteristics, so that similarities and differences that matter for the decision become visible. It had to carry explicit difficulty differences within the archetypes \parencite{suDifficultyAwareAgenticOrchestration2025,gaoSingleagentMultiagentSystems2025}. And it had to run in a sandbox environment for controlled execution. No
+published benchmark offers all of this (Table~\ref{tab:corpus-positioning}).
+
+The taxonomy was therefore developed on an own benchmark corpus with the taxonomy development method of
+\textcite{nickersonMethodTaxonomyDevelopment2013}. The benchmarks were identified to provide an empirically grounded basis for a task taxonomy, not an exhaustive inventory of all published benchmarks or task instances.
+The method alternates two directions. Conceptual-to empirical iterations derived candidate dimensions and archetypes from the paradigm contrast of
+Section~2.2 and tested them against the task instances of the sources. Empirical-to-conceptual iterations clustered the task instances of the sources and abstracted their structural similarities into archetypes. The process ended when every task instance mapped to exactly one archetype, no archetype was empty, and no archetype was split or merged in a further iteration.
+
+The benchmarks were identified in two steps. The start set came from the literature review (Section~2.4). Backward snowballing over the related work of every admitted source then added candidates until no new source met the criteria. This follows the backward search of
+\textcite{websterAnalyzingPrepareFuture2002} and the snowballing guidelines
+of \textcite{wohlinGuidelinesSnowballingSystematic2014}. Every admitted source was verified in full
+text and in its repository. The unit of selection is the task of Section~2.2.3. Benchmarks were included in the taxonomy development when three inclusion criteria held jointly. (a) The source defines its tasks for execution by an LLM-based component at the task level of Section~2.2.3, or its scenarios decompose to that level. (b) The tasks represent realistic activities of enterprise or knowledge work, for example executing
+transactions in business systems, applying organizational rules, or researching information. Where a source mixes such tasks with others, only the work-related subset entered the corpus. (c) The benchmark provides task instances with a defined input and an output that can be checked against a
+reference, so that every instance can be executed and scored. A source that met the criteria was still not added when it was a superseded predecessor or a variant of an admitted source, or when it added no task pattern beyond the admitted sources. This applies the ending condition of the taxonomy method that a further iteration adds no new dimension or characteristic.
+Thirteen sources remained and shaped the taxonomy
+(Table~\ref{tab:corpus-positioning}).
+
+\begin{table}[htbp]
+  \centering
+  \caption{Benchmark corpus and positioning of the present work. Task instances: agentic (Ag.) and non-agentic (Non-ag.). Definitions: task archetypes (Arch.), task characteristics (Char.), controlled difficulty axis (Diff.).}
+  \label{tab:corpus-positioning}
+  \footnotesize
+  \begin{tabular}{p{6.3cm} c c c c c c}
+    \toprule
+    \textbf{Source} & \textbf{Year} & \textbf{Ag.} & \textbf{Non-ag.} & \textbf{Arch.} & \textbf{Char.} & \textbf{Diff.} \\
+    \midrule
+    WorkBench \parencite{stylesWorkBenchBenchmarkDataset2024} & 2024 & \cmark & --- & partial & --- & --- \\
+    WONDERBREAD \parencite{wornowWONDERBREADBenchmarkEvaluating2024} & 2024 & --- & \cmark & \cmark & --- & --- \\
+    World of Workflows \parencite{guptaWorldWorkflowsBenchmark2026} & 2026 & \cmark & \cmark & \cmark & --- & --- \\
+    WorkArena++ \parencite{boisvertWorkArenaCompositionalPlanning2025} & 2025 & \cmark & --- & partial & partial & \cmark \\
+    TheAgentCompany \parencite{xuTheAgentCompanyBenchmarkingLLM2025} & 2025 & \cmark & --- & partial & --- & --- \\
+    OFFICEBENCH \parencite{wangOfficeBenchBenchmarkingLanguage2024} & 2024 & \cmark & --- & partial & --- & partial \\
+    CRMArena-Pro \parencite{huangCRMArenaProHolisticAssessment2025} & 2025 & \cmark & \cmark & \cmark & partial & --- \\
+    Kourani et al. \parencite{kouraniEvaluatingLargeLanguage2024} & 2024 & --- & \cmark & --- & partial & --- \\
+    WebArena \parencite{zhouWebArenaRealisticWeb2024} & 2024 & \cmark & --- & partial & --- & --- \\
+    AssistantBench \parencite{yoranAssistantBenchCanWeb2024} & 2024 & \cmark & --- & --- & partial & partial \\
+    BrowseComp \parencite{weiBrowseCompSimpleChallenging2025} & 2025 & \cmark & \cmark & --- & --- & --- \\
+    FlowBench \parencite{xiaoFlowBenchRevisitingBenchmarking2024} & 2024 & \cmark & --- & partial & \cmark & --- \\
+    $\tau$-bench \parencite{yao$t$benchBenchmarkToolAgentUser2024} & 2024 & \cmark & --- & --- & partial & --- \\
+    \midrule
+    \textbf{This work} & 2026 & \cmark & \cmark & \cmark & \cmark & \cmark \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The resulting task taxonomy positions every task on four structural dimensions. Step predictability asks whether the steps can be enumerated before execution. Information availability asks whether the required
+information is in the input, in a known store, or unknown. Output ambiguity asks whether the output is schema-bound or open. Error consequence asks how
+severe a failure is. The following eight archetypes, labeled A to H, cover the resulting space. The full taxonomy documentation, with the dimensional profile of every archetype, the derivation of the dimensions, and the mapping of archetypes to corpus sources, is provided in Appendix~\ref{app:taxonomy}.
+
+\begin{description}
+  \item[A. Exploratory research and synthesis.] The task is to find an answer that is neither in the input nor in a known store. The information is spread over sources that must first be located, and one finding often decides where to look next. A typical example is a research question whose answer must be pieced together from several web pages. The answer is short and can be checked against a reference.
+  \item[B. Structured data retrieval and transformation.] The task is to fetch records from known systems and bring them into a required form. The
+  stores are known, the fields are known, and the result must fit a fixed schema. The difficulty lies in combining sources and aggregating correctly, not in finding them.
+  \item[C. Ambiguous classification and disambiguation.] The task is to assign inputs that are vague or mixed to one of a fixed set of labels. All information is in the input; the judgment lies in reading it correctly. A typical example is the triage of incoming support emails into categories such as billing, technical issue, or sales request. The output is a label per input that can be checked against a reference.
+  \item[D. Compliance and rule-based decisioning.] The task is to decide a case by applying written rules. The rules exist in a policy document or store, the case facts arrive as text, and the decision is to approve, reject, or escalate. Errors weigh heavily, because a wrong approval changes the state of the business.
+  \item[E. Output verification and quality control.] The task is to check an artifact that already exists, such as a drafted document, against stated criteria. A typical example is the review of a customer response. The verdict is a fixed label, such as pass, needs revision, or fail.
+  \item[F. Transactional action execution.] The task is to change the state of a system through tool calls e.g send a mail, book a meeting or update a record. Success is not the text the system produces but the
+  resulting state. A typical example is closing a set of support cases and notifying the responsible contacts. Some instances can be planned from prior reads, others depend on how a previous action turned out.
+  \item[G. Strategic and adaptive planning.] The task is to produce a plan, an ordered set of intended actions, without executing it. The structure of the plan is the solution. A typical example is a plan for a key
+  account: which records to update, whom to notify, and in which order. A plan is correct when a simulator can execute it and the goal state holds.
+  \item[H. Content drafting and refinement.] The task is to write a document whose acceptance criteria are soft and which is shaped through feedback. A example is a report to a manager that reports figures, follows format constraints, and is revised. Quality has no single reference. It is judged against rubric criteria beside checkable requirements such as required data points and length windows.
+\end{description}
+
+\subsubsection{Instantiation and Experimental Setup}
+\label{subsubsec:TADF/setup}
+
+\paragraph{Task instances.}
+To operationalize the archetypes, experimental task instances were constructed with the support of coding agents. They follow the task patterns of the corpus sources, so that every instance is grounded
+in the referenced literature (Table~\ref{tab:app-instantiation} in Appendix~\ref{app:taxonomy}). Each archetype was operationalized with five
+task instances per level on a three-level difficulty axis. This yields a main corpus of 120 instances. Difficulty was operationalized per archetype
+along the dimension that produces routing-relevant variance (Table~\ref{tab:app-difficulty} in Appendix~\ref{app:taxonomy}).
+
+Archetype A was instantiated as research questions built by the inverted-question method of BrowseComp, with gold answers verified across two or more sources and difficulty as the number of sources to combine
+(BrowseComp, AssistantBench). Archetype B was instantiated as natural-language questions over CRM, mail, and calendar stores whose answer combines one to three sources (CRMArena-Pro structured querying, WorkBench mailbox and calendar data). Archetype C was instantiated as batch triage of three to eight support emails with competing signals (CRMArena-Pro case
+routing and activity-priority tasks). Archetype D was instantiated as quote requests decided against an approval policy in an external policy store
+with one to five or more combined rules (CRMArena-Pro workflow execution, World of Workflows constraint understanding, the WorkBench no-action subset, FlowBench rule following). Archetype E was instantiated as inquiry
+and candidate-response pairs judged against a five-criterion rubric with a fixed verdict (WONDERBREAD SOP ranking and demo validation, the self-improvement loop of Kourani et al., TheAgentCompany feedback subtasks). Archetype F  was instantiated as mail, calendar, and CRM actions scored on the post-execution state. Ten
+instances adapt WorkBench action patterns, five are author-designed, among them three runtime-feedback instances with a documented but unpredictable
+failure mode that make the boundary observable (WorkBench, WorkArena++). Archetype G was instantiated as plans over the CRM workspace validated by a deterministic plan simulator, with plan length as difficulty (FlowBench plan generation, WorkArena++ compositional tasks, validation conventions
+from PlanBench). Archetype H was instantiated as data-to-text briefs with constraints, an inline data table, and scripted feedback rounds, scored by a compliance layer and a validated judge (WONDERBREAD SOP generation and
+improvement, TheAgentCompany report drafting).
+
+\paragraph{Sandbox environment.}
+All instances run in one sandbox environment. It is built in Python on a local SQLite database and was designed for determinism and realism at once
+(Table~\ref{tab:setup}). Fifteen tools form the tool
+surface (Table~\ref{tab:tools}). Four database tools read, search, and update the CRM and close cases through a transactional call with a documented but unpredictable refusal rule. Four mail tools and four calendar tools simulate an enterprise mail and calendar service; their
+responses are shaped like the Gmail and Google Calendar APIs, so that payload size and structure are realistic. Two policy tools expose an external policy registry for the compliance archetype. One search tool runs live web search with a per-query disk cache, so both paradigms see
+identical snippets across runs. Every simulated call and every cached search call adds a synthetic latency of 300 ms plus or minus 50 ms that is derived from a hash of the tool name and its arguments. Identical calls
+therefore cost identical time in both paradigms, and latency stays comparable across runs. Tool exposure is fixed per archetype and identical for both paradigms. Instructions follow one design rule for both paradigms: a natural request plus an excerpt of an organizational runbook, with no procedural hints. This follows the pattern of $\tau$-bench
+\parencite{yao$t$benchBenchmarkToolAgentUser2024}.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Tool surface of the sandbox environment.}
+  \label{tab:tools}
+  \small
+  \begin{tabular}{p{2.3cm} p{4.9cm} p{6.7cm}}
+    \toprule
+    \textbf{Service} & \textbf{Tools} & \textbf{Behavior} \\
+    \midrule
+    CRM database & db\_read, db\_search, db\_update, attempt\_close\_case & SQLite behind a table allowlist. Updates restricted to a per-table column whitelist. Closing a case is refused under a hidden rule \\
+    Mail & send\_email, search\_emails, forward\_email, delete\_email & Simulated service. Responses shaped like Gmail API messages. Synthetic latency \\
+    Calendar & create\_event, search\_events, update\_event, delete\_event & Simulated service. Responses shaped like Google Calendar events. Synthetic latency \\
+    Policy registry & list\_policies, get\_policy & External store of policy texts for the compliance archetype. Synthetic latency \\
+    Web search & tavily\_search & Live search through the Tavily API with a per-query disk cache. Synthetic latency \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The data layer is one SQLite database with seven tables: accounts, contacts, agents, cases, opportunities, emails, and events. All data is synthetic and generated by a deterministic seed script. The records reference each other coherently: contacts belong to accounts, cases and opportunities reference accounts and agents, and mails and events reference contacts and cases, so that multi-source tasks have a consistent answer.
+The mail and event tables follow the shape of WorkBench. The database is rebuilt from the seed before every run, so both paradigms start from an identical state and post-execution predicates compare against a known baseline. Instance-specific data is added on top of the seed without changing it: the payload family inserts per-instance overlays in fresh identifier ranges, and the drift family installs per-instance database
+triggers that fire on the run's first write. Every ground truth is a Python predicate over the post-execution state, a reference label, or a gold answer with a validated judge. Predicates over the post-execution state were checked against a negative control on the fresh seed, a positive control after a simulated correct run, and adversarial simulations that must fail. The schema, the seed scripts, and the exact row counts are part of the repository.
+
+\paragraph{Metrics.}
+The metric set was fixed in the pre-registered protocol. Changes to the
+operationalization of single metrics are logged as deviations (D-011 to
+D-013). This follows the DSR requirement that evaluation criteria precede
+design assessment \parencite{hevnerDesignScienceInformation2004}. Two
+metrics are co-primary, because the research question targets both
+performance and resource efficiency. The first is success. It is task
+completion against the post-execution state of the target system where a
+deterministic predicate exists (archetypes B to G). It is a validated judge
+verdict against a gold answer for research tasks (A). It is a rubric-based
+quality score with a deterministic compliance layer for drafting tasks (H).
+The second is token cost, the input and output tokens summed over all LLM
+calls. Four metrics are secondary: latency, error rate, tool-call count, and
+robustness under input perturbation. Success is scored outcome-centrically.
+A run counts as solved when the resulting state or artifact matches the
+gold, not when a particular tool sequence was used. Where an LLM judge is
+needed, it runs blind to the paradigm at temperature zero with a frozen
+prompt. Every judged archetype also carries a deterministic layer, for
+example required data points and length windows for drafting tasks. The
+analysis is descriptive by design. With five instances per cell and five to
+twenty-five runs per pooled cell, effect direction and size are read per
+cell and across model tiers. The run-to-run flip rate reported below bounds
+every single-run reading.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Experimental setup of the main grid (final measurement design).}
+  \label{tab:setup}
+  \small
+  \begin{tabular}{p{2.9cm} p{5.6cm} p{4.2cm} p{1.9cm}}
+    \toprule
+    \textbf{Element} & \textbf{Choice} & \textbf{Rationale} & \textbf{Log} \\
+    \midrule
+    Task instances & 120 author-constructed instances, five per level and archetype; patterns of ten corpus sources & Grounding in the literature; both paradigms on one infrastructure & IT-017, App.~\ref{app:taxonomy} \\
+    Data layer & Seeded SQLite, restored before every run & Determinism, offline reproducibility & IT-003 \\
+    Services & Simulated mail, calendar, policy registry; API-shaped payloads; deterministic synthetic latency (300 ms $\pm$ 50 ms) & Payload realism protects the cost metric & IT-013, IT-016 \\
+    Search & Live web search with per-query disk cache; synthetic latency applied & Identical snippets for both paradigms & IT-008, IT-038 \\
+    Success scoring & Deterministic post-state predicates; validated LLM judge plus deterministic layer for A and H & Outcome-centric scoring; judge reliability bounded & IT-013, IT-028, IT-029 \\
+    Paradigms & Compile-time graph vs. ReAct loop; shared backbone, tools, prompts, logging & Paradigm as the only systematic difference & IT-008, IT-013 \\
+    Model tiers & gpt-5.4-nano (2 clean + 1 robustness run), gpt-5.4-mini (2 + 1), gpt-5.2 (1 + 1); judge on gpt-5.2 & Stability of the paradigm effect across capability; cost & IT-006, IT-053 \\
+    Decoding & Temperature 0, seed 42; reasoning mode disabled on the reference tier only & Reproducibility; documented asymmetry & IT-030, IT-053 \\
+    Stability & Two clean runs on the two smaller tiers; flip rate 10.2\% & Two-run discipline & IT-053 \\
+    Pre-registration & Phase 2 protocol; deviations D-001 to D-032 & Criteria before results & App.~\ref{app:protocol} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+
+
+
+
+
 
 \subsection{The Artifact}
 \label{subsec:TADF/artifact}
@@ -24,7 +269,7 @@ final artifact solving a complete instance of its problem class and summarizes t
 
 \subsection{Evaluation}
 \label{subsec:TADF/evaluation}
-...
+
 
 \subsection{Demonstration}
 \label{subsec:TADF/demonstration}
