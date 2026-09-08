@@ -2,3 +2,215 @@
 \section{Appendix}
 \label{app:A}
 ...
+
+
+% Prepared block for Appendix D (label app:taxonomy). Section 4.2 references
+% this appendix for the taxonomy documentation, the instantiation record,
+% the difficulty axes, and the screening record.
+
+\section{Task Taxonomy Documentation}
+\label{app:taxonomy}
+
+This appendix documents the task taxonomy of Section~\ref{subsubsec:TADF/taxonomy}. It gives the
+dimensional profile of every archetype
+(Table~\ref{tab:app-archetypes}), the derivation of the four dimensions,
+the iterations of the taxonomy development method
+(Table~\ref{tab:app-iterations}), the mapping of every archetype to the
+corpus sources that substantiate it (Table~\ref{tab:app-mapping}), the
+sources and patterns behind the experimental instances
+(Table~\ref{tab:app-instantiation}), the difficulty axis of every archetype
+(Table~\ref{tab:app-difficulty}), and the screening record of the corpus
+selection (Table~\ref{tab:app-screening}).
+
+\subsection{Archetypes and Dimensions}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Dimensional profile and expected routing per archetype. SP: step predictability; IA: information availability; OA: output ambiguity; EC: error consequence. The expected routing is the reading of the profile before the experiments; the measured routing is reported in Section~\ref{subsubsec:TADF/results}.}
+  \label{tab:app-archetypes}
+  \footnotesize\setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l p{3.6cm} p{1.5cm} p{1.5cm} p{1.3cm} p{1.6cm} p{4.6cm}}
+    \toprule
+    \textbf{ID} & \textbf{Archetype} & \textbf{SP} & \textbf{IA} & \textbf{OA} & \textbf{EC} & \textbf{Expected routing} \\
+    \midrule
+    A & Exploratory research and synthesis & moderate & low & low & low to moderate & Agent loop \\
+    B & Structured data retrieval and transformation & moderate & moderate & low & moderate & LLM workflow \\
+    C & Ambiguous classification and disambiguation & high & high & low & moderate to high & LLM workflow with structured output \\
+    D & Compliance and rule-based decisioning & high & moderate & low & high & LLM workflow \\
+    E & Output verification and quality control & high & high & low & moderate & LLM workflow (LLM as judge) \\
+    F & Transactional action execution & high or low (bipolar) & high & low & high & Two-stage workflow for plan-time-decidable inputs; agent loop for runtime-feedback inputs \\
+    G & Strategic and adaptive planning & low & moderate & moderate & moderate & Agent loop; workflow only for templated processes \\
+    H & Content drafting and refinement & moderate to low & high & high & low to moderate & Agent loop or hybrid \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The four dimensions are task-side properties that predict paradigm fit.
+They are re-expressed from the workflow-versus-agent contrast of
+Section~2.2.2. Step predictability follows from the locus-of-control and
+step-sequence contrast: a workflow needs a step sequence that can be fixed
+before execution, an agent loop selects steps at runtime
+\parencite{dumas2026, schluntzBuildingEffectiveAgents2024}. Information
+availability follows from the way each paradigm acquires its inputs: a
+workflow packs inputs into node prompts in advance, an agent may need to
+acquire information through observations during execution
+\parencite{sumersCognitiveArchitecturesLanguage2024, xiaoFlowBenchRevisitingBenchmarking2024}.
+Output ambiguity follows from the structured-output capability of workflow
+nodes against the open generation of agent loops
+\parencite{khattabDSPyCompilingDeclarative2024, schluntzBuildingEffectiveAgents2024}.
+Error consequence follows from the auditability and predictability
+advantages of workflows and from the design constraints of small and
+medium-sized enterprises \parencite{islam2026, olujimi2025, bandara2026}.
+The dimensions are retained as separate axes although step predictability
+and information availability correlate empirically, because they generate
+distinct architectural consequences: low step predictability requires
+runtime control, low information availability requires runtime perception.
+The ordinal anchors of the dimensions were fixed in deviation D-028 and are
+part of the artifact's constructs; they follow below. The
+controlled experiments later showed that the dimensions bind at
+sub-dimensional granularity: the four dimensions classify tasks, the
+measured sub-mechanisms route them.
+
+\paragraph{Task dimensions and their anchors.}
+The four task dimensions are constructs of the framework. Their ordinal
+anchors are fixed, so assigning a value follows from the definition of the
+level, not from case-by-case judgment.
+
+\emph{Step predictability.} High: the steps and the tools they invoke can be
+enumerated before execution. Moderate: the kind of step is known, while the
+number or parameterization depends on the input. Low: the step structure is
+itself part of the solution and emerges at runtime.
+
+\emph{Information availability.} The anchor is read on the information that
+defines the task, not on operational state checks. High: the information is
+contained in the input. Moderate: the information resides outside the input
+in a known and enumerable store with guaranteed access, so retrieval is a
+deterministic step. Low: the location of the information is not known in
+advance, so it must be searched for, and a later search may depend on what
+an earlier one returned.
+
+\emph{Output ambiguity.} Low: a single correct output, verifiable against a
+schema or a reference. Moderate: several defensible outputs whose relative
+quality requires judgment. High: soft acceptance criteria, shaped
+iteratively through feedback.
+
+\emph{Error consequence.} Low: errors are reviewable and cheaply corrected
+before they propagate. Moderate: errors cause rework or degrade downstream
+decisions. High: errors change system state or carry regulatory or financial
+exposure, including asymmetric cases in which one wrong decision direction
+is costlier than the other.
+
+A dimension can take a conditional value. A conditional value is not a
+moderate value: it names two opposite modes separated by a known
+sub-condition. The transactional action archetype is the measured example:
+it sits at the high anchor of step predictability when every action is
+decidable from prior reads, and at the low anchor when the next action
+depends on the outcome of a preceding action. The routing splits along the
+same sub-condition.
+
+\subsection{Taxonomy Development}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Iterations of the taxonomy development method \parencite{nickersonMethodTaxonomyDevelopment2013}. Direction: conceptual to empirical (C$\rightarrow$E) or empirical to conceptual (E$\rightarrow$C).}
+  \label{tab:app-iterations}
+  \footnotesize\setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l l p{3.0cm} p{5.6cm} p{3.2cm}}
+    \toprule
+    \textbf{Iteration} & \textbf{Direction} & \textbf{Input} & \textbf{Result} & \textbf{Ending conditions} \\
+    \midrule
+    1a & C$\rightarrow$E & Paradigm contrast of Section~2.2 & Four candidate dimensions: step predictability, information availability, output ambiguity, error consequence & Not met; no archetypes yet \\
+    1b & E$\rightarrow$C & Task instances of the corpus sources, clustered by profile & Seven candidate archetypes: open information gathering, structured retrieval, ambiguous classification, output quality evaluation, threshold-based decision, multi-source synthesis, action execution & Not met; planning and drafting instances without archetype \\
+    1c & C$\rightarrow$E & Re-examination of every corpus source against the seven; long-horizon scenarios decomposed to task level & Eight archetypes A--H: planning (G) and drafting (H) added, multi-source synthesis folded into research (A), the other five carried under their final names; F defined as bipolar & Met: every instance maps to one archetype, none empty, profiles unique; taxonomy judged concise, robust, comprehensive, extendible, explanatory \\
+    2 & E$\rightarrow$C & Validation sweeps and the main grid (Section~\ref{subsubsec:TADF/paradigms}) & No archetype merged or split. Refinements: A anchored on multi-source research, difficulty as sources to combine (D-016); B re-operationalized as multi-source retrieval; C reframed as batch triage; D information availability reset from high to moderate, rules in an external policy store (D-024); F bipolarity anchored on action-outcome dependence, three designed runtime-feedback instances; ordinal anchors of the dimensions fixed (D-028); dimensions bind at sub-dimensional granularity & Re-checked after each refinement and met \\
+    3 & E$\rightarrow$C & Twelve practitioner interviews (Section~\ref{subsec:TADF/evaluation}) & Task characteristics and archetypes judged plausible and useful; no archetype added, merged, or split & Unchanged \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Mapping of the archetypes to the corpus sources that substantiate them (empirical-to-conceptual evidence of the taxonomy development). WorkArena++ carries the L1 tasks of WorkArena.}
+  \label{tab:app-mapping}
+  \footnotesize
+  \begin{tabular}{l p{3.4cm} p{9.6cm}}
+    \toprule
+    \textbf{ID} & \textbf{Archetype} & \textbf{Substantiating sources} \\
+    \midrule
+    A & Exploratory research and synthesis & BrowseComp; AssistantBench; WebArena research subset; WorkArena++ L3; WONDERBREAD QA; CRMArena-Pro sales insight \\
+    B & Structured data retrieval and transformation & OFFICEBENCH single-app; WorkArena++ L1 filter and sort; CRMArena-Pro structured querying; World of Workflows state prediction; WorkBench \\
+    C & Ambiguous classification and disambiguation & CRMArena-Pro named-entity disambiguation, wrong-stage rectification, activity priority understanding \\
+    D & Compliance and rule-based decisioning & CRMArena-Pro workflow execution; World of Workflows constraint understanding; WorkBench no-action subset; FlowBench rule following; $\tau$-bench policy following \\
+    E & Output verification and quality control & WONDERBREAD SOP ranking and demo validation; Kourani et al. self-improvement; TheAgentCompany feedback subtasks \\
+    F & Transactional action execution & WorkBench; WorkArena++ L1 and L2; OFFICEBENCH multi-app; TheAgentCompany software-engineering and project-management tasks; WebArena action subset; $\tau$-bench tool actions \\
+    G & Strategic and adaptive planning & FlowBench plan generation; World of Workflows agentic task completion; WorkArena++ L2 compositional \\
+    H & Content drafting and refinement & WONDERBREAD SOP generation and improvement; TheAgentCompany report drafting; Kourani et al. NL to BPMN \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Instantiation of the Archetypes}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Sources behind the experimental instances per archetype and the way each source was used. No benchmark instance was reproduced; every instance is author-constructed on the local data model and carries its source in a provenance record.}
+  \label{tab:app-instantiation}
+  \footnotesize
+  \begin{tabular}{l p{3.4cm} p{9.6cm}}
+    \toprule
+    \textbf{ID} & \textbf{Source} & \textbf{Use in the instantiation} \\
+    \midrule
+    A & BrowseComp & Construction method: inverted questions with several conjunctive constraints, short and stable gold answers, judge on semantic equivalence (D-016) \\
+      & AssistantBench & Task style: realistic, time-consuming web research with closed-form answers \\
+    B & CRMArena-Pro & Task semantics of structured querying over a CRM \\
+      & WorkBench & Data shapes of the mailbox and calendar stores \\
+    C & CRMArena-Pro & Task semantics of case routing and activity-priority understanding, reframed as batch triage \\
+    D & CRMArena-Pro; World of Workflows; WorkBench; FlowBench & Rule-application and no-action patterns of workflow execution, constraint understanding, the no-action subset, and rule following; policy held in an external store (D-024) \\
+    E & WONDERBREAD; Kourani et al.; TheAgentCompany & LLM-as-judge pattern of SOP ranking and demo validation, the self-improvement loop, and feedback subtasks; verdict scored deterministically (D-011) \\
+    F & WorkBench & Ten instances adapt WorkBench action patterns over mail, calendar, and CRM with outcome-centric post-state predicates \\
+      & WorkArena++ & Surface style of the five author-designed instances, among them three runtime-feedback instances \\
+    G & PlanBench & Validation conventions: mechanical plan validation, plan length as difficulty, temperature 0 (D-012) \\
+      & FlowBench; WorkArena++ & Plan-generation framing and compositional task shape \\
+    H & WONDERBREAD; TheAgentCompany & Data-to-text drafting with constraints and scripted feedback rounds after SOP generation and improvement and report drafting; deterministic compliance layer beside the judge (D-013) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Difficulty axis and levels per archetype. Five instances per level, 120 instances in total.}
+  \label{tab:app-difficulty}
+  \footnotesize\setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l p{3.6cm} p{3.0cm} p{3.2cm} p{4.4cm}}
+    \toprule
+    \textbf{ID} & \textbf{Difficulty axis} & \textbf{Low} & \textbf{Medium} & \textbf{High} \\
+    \midrule
+    A & Number of distinct sources to combine and their dependency structure & 2 sources, parallel & 3 sources, parallel & Runtime-dependent chain: each result is the query input of the next search \\
+    B & Aggregation complexity and join depth & Single-table lookup or aggregate & Aggregation over two to three joined tables & Four or more tables with grouped argmax \\
+    C & Input ambiguity: signal clarity and confusability of near-duplicate categories & Single clear signal cluster & Two signal clusters, one dominant & Confusable near-duplicate categories with paraphrase or buried core ask \\
+    D & Number of conjoint rule conditions and precedence depth; rules retrieved from an external policy registry & 1 rule & 3 rules combined & 5 or more rules with precedence conflicts and gate-dominated paths \\
+    E & Judgment subtlety against a fixed five-criterion rubric & Clear cases, failure obvious on first reading & Failures hidden in friendly phrasing & Boundary cases at the verdict cutoff \\
+    F & Number of target records and read-then-act steps, quadrant-balanced along the binding axes & 1 action, 0 to 1 reads & Multi-record actions over one read set, including a read-conditional booking & Argmax-then-act, one multi-step fan-out, three runtime-feedback instances \\
+    G & Optimal plan length & 3 steps & 5 to 7 steps & 15 to 18 steps \\
+    H & Constraint load (format, audience, tone, length, framing, required data points) and feedback rounds & 1 to 2 constraints, no feedback & 3 to 4 constraints, 1 feedback round & 5 or more constraints, 2 feedback rounds, one a tension revision \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Screening Record of the Corpus Selection}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Candidates not admitted to the corpus, with the inclusion criterion of Section~4.2.1 they failed, or the duplicate rule that stopped their addition.}
+  \label{tab:app-screening}
+  \footnotesize
+  \begin{tabular}{p{2.4cm} p{11.6cm}}
+    \toprule
+    \textbf{Failed} & \textbf{Candidates and reason} \\
+    \midrule
+    (b) work activity & BIG-bench, MMLU, HellaSwag (knowledge tests without a work task); ToolBench, ToolQA, APIBench, API-Bank (generic tool-call suites); AgentBench (mixed-environment capability suite with games and operating-system tasks); MiniWoB, MiniWoB++ (synthetic web micro-tasks); PlanBench (abstract planning domains; its validation conventions are adopted for archetype G); SLURP, TaskMaster (smart-home single actions); AITW, MoTIF (consumer mobile-app navigation); WebShop (consumer shopping); Mind2Web, WebLINX (navigation of consumer websites); Sotopia (social-interaction episodes). \\
+    (c) checkable instances & BrowserGym (environment and harness without task instances); BPI Challenge event logs (data sets, not task instances); PM-LLM-Benchmark (process-mining questions scored by an LLM judge without a reference). \\
+    Duplicate rule & WorkArena (its L1 tasks are contained in WorkArena++); CRMArena (predecessor of CRMArena-Pro); BrowseComp-Plus (third-party retrieval variant of BrowseComp); VisualWebArena (multimodal variant of WebArena); $\tau^2$-bench (adds a domain to $\tau$-bench without a new task pattern); GAIA (general-assistant research questions; pattern covered by AssistantBench and BrowseComp); OSWorld, OmniACT (office-application tasks covered by OFFICEBENCH; the remaining tasks are general computer use); SWE-bench (code issue resolution; the software-engineering actions of TheAgentCompany carry the transactional pattern); AgentArch (two enterprise use cases covered by CRMArena-Pro and $\tau$-bench; evaluation target is the architecture configuration); Spider~2.0, SpreadsheetBench (structured retrieval and transformation covered by the admitted sources); EntCollabBench (workflow and approval tasks that follow the patterns of WorkBench, World of Workflows, and $\tau$-bench; evaluation target is multi-agent collaboration). \\
+    \bottomrule
+  \end{tabular}
+\end{table}
