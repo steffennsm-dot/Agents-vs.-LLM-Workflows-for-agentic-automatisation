@@ -18,6 +18,8 @@
 \usepackage{caption}
 \usepackage{booktabs}
 \usepackage{pifont}
+\usepackage{placeins}
+\usepackage{array}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta}
 
@@ -26,7 +28,16 @@
 \pgfplotsset{compat=1.18}
 
 \usepackage{textgreek}
-\newcommand{\cmark}{\ding{51}} % check mark
+\newcommand{\cmark}{\ding{51}}
+% Pakete laden
+\usepackage{amssymb} % Für das Standard-Häkchen (\checkmark)
+\usepackage{pifont}  % Für Sonderzeichen und Symbole
+
+% Eigene Befehle definieren
+\newcommand{\xmark}{\ding{55}} % Passendes Kreuzchen
+
+% set indentation size
+% check mark
 % set indentation size
 \usepackage{indentfirst}
 \setlength{\parindent}{30pt}
@@ -85,7 +96,7 @@
 %THESIS Parameters 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{Workflow or Agent? Architecture Decision Framework for Task Execution in Agentic Process Automation}
+\title{LLM Workflow or Agent? A Task-Level Architecture Decision Framework for Agentic Workplace Automation}
 
 \newcommand{\thesisdate}{\today} % TODO: durch das Abgabedatum ersetzen
 \date{\thesisdate} % sorgt dafuer, dass \thesisdate auf der Titelseite landet
@@ -113,12 +124,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \input{Template/Title.tex}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% SOOA - only include this in Bachelor or Master Thesis
-% in Bachelorseminar works you don't need to include and sign this
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\input{Template/SOOA.tex}
-\pagenumbering{Roman}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ABSTRACT
@@ -150,28 +155,31 @@
 \input{./Sections/Section_1}
 % SEC2
 \input{./Sections/Section_2}
-
-% SEC X
+% SEC 3
 \input{./Sections/Section_3}
-
 % SEC 4 - TADF
 \input{./Sections/Section_4}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%APPENDICES
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\appendix
-\renewcommand*{\thesection}{\Alph{section}}\textbf{}
-
-% APPENDIX A
-\input{Appendices/Appendix_1.tex}
+% SEC 5 - Discussion
+\input{Sections/Section_5}
+% SEC 6 - Conclusion
+\input{Sections/Section_6}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %BIBLIOGRAPHY
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
-\renewcommand*{\thesection}{}\textbf{}
-
 \printbibliography[heading=bibintoc]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%APPENDICES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+\addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
+
+% APPENDIX A
+\input{Appendices/Appendix_1.tex}
+% APPENDIX B
+\input{Appendices/Appendix_2.tex}
+
 
 \end{document}
